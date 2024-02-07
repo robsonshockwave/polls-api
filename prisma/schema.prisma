@@ -17,11 +17,30 @@ model Poll {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @default(now())
   options   PollOption[]
+  votes     Vote[]
 }
 
 model PollOption {
-  id     String @id @default(uuid())
-  title  String
+  id    String @id @default(uuid())
+  title String
+
   poll   Poll   @relation(fields: [pollId], references: [id])
   pollId String
+  votes  Vote[]
+}
+
+model Vote {
+  id Int @id @default(autoincrement())
+
+  pollOption   PollOption @relation(fields: [pollOptionId], references: [id])
+  pollOptionId String
+
+  sessionId String
+
+  poll   Poll   @relation(fields: [pollId], references: [id])
+  pollId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([pollId, sessionId])
 }
